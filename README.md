@@ -5,7 +5,6 @@ Application web installable (PWA) pour consulter le classement FOILRACE de South
 ## Version actuelle
 
 - classement selon le meilleur temps de chaque rider ;
-- filtres Foil et Wake ;
 - recherche par pseudo ;
 - ajout manuel d'un chrono pour les essais ;
 - fonctionnement hors ligne et installation sur l'écran d'accueil ;
