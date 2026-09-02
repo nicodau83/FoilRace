@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#071a20" />
+    <meta name="description" content="Le classement officiel FOILRACE de South Wake Park." />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>FOILRACE — Classement</title>
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="topbar" aria-label="Navigation principale">
+        <a class="brand" href="#classement" aria-label="FOILRACE, accueil">
+          <span class="brand-mark" aria-hidden="true">FR</span>
+          <span>FOILRACE</span>
+        </a>
+        <button id="installButton" class="install-button" type="button" hidden>Installer l’app</button>
+      </nav>
+
+      <div class="hero-copy">
+        <p class="eyebrow">SOUTH WAKE PARK · PUGET-SUR-ARGENS</p>
+        <h1>La piste ne ment jamais.</h1>
+        <p class="hero-text">Tous les riders. Tous les runs. Un seul classement.</p>
+      </div>
+
+      <div class="live-strip" aria-label="Statut du chronométrage">
+        <span class="pulse" aria-hidden="true"></span>
+        <span>CHRONOMÉTRAGE PRÊT</span>
+        <span id="lastUpdate" class="last-update"></span>
+      </div>
+    </header>
+
+    <main>
+      <section id="classement" class="ranking-section" aria-labelledby="rankingTitle">
+        <div class="section-heading">
+          <div>
+            <p class="section-number">01 / CLASSEMENT</p>
+            <h2 id="rankingTitle">Meilleurs temps</h2>
+          </div>
+          <div class="season-badge">SAISON 2026</div>
+        </div>
+
+        <div class="toolbar">
+          <div class="filters" role="group" aria-label="Filtrer le classement">
+            <button class="filter active" type="button" data-category="Tous">Général</button>
+            <button class="filter" type="button" data-category="Foil">Foil</button>
+            <button class="filter" type="button" data-category="Wake">Wake</button>
+          </div>
+          <label class="search">
+            <span class="sr-only">Rechercher un rider</span>
+            <input id="searchInput" type="search" placeholder="Rechercher un rider" autocomplete="off" />
+          </label>
+        </div>
+
+        <div class="ranking-card">
+          <div class="table-head" aria-hidden="true">
+            <span>Rang</span><span>Rider</span><span>Runs</span><span>Meilleur temps</span>
+          </div>
+          <ol id="rankingList" class="ranking-list" aria-live="polite"></ol>
+          <p id="emptyState" class="empty-state" hidden>Aucun rider ne correspond à cette recherche.</p>
+        </div>
+      </section>
+
+      <section class="run-section" aria-labelledby="runTitle">
+        <div class="run-copy">
+          <p class="section-number">02 / NOUVEAU RUN</p>
+          <h2 id="runTitle">Enregistrer un chrono</h2>
+          <p>Ce formulaire sert pour la première version de test. Ensuite, les pylônes ESP32 enverront les temps automatiquement.</p>
+        </div>
+
+        <form id="runForm" class="run-form">
+          <label>
+            Pseudo du rider
+            <input id="riderName" name="riderName" maxlength="24" placeholder="Ex. NicoFoil" required />
+          </label>
+          <label>
+            Catégorie
+            <select id="category" name="category">
+              <option value="Foil">Foil</option>
+              <option value="Wake">Wake</option>
+            </select>
+          </label>
+          <label>
+            Temps
+            <div class="time-input">
+              <input id="seconds" name="seconds" type="number" min="0" max="999" inputmode="numeric" placeholder="42" required />
+              <span>,</span>
+              <input id="centiseconds" name="centiseconds" type="number" min="0" max="99" inputmode="numeric" placeholder="38" required />
+              <span>s</span>
+            </div>
+          </label>
+          <button class="primary-button" type="submit">Ajouter au classement</button>
+          <p id="formMessage" class="form-message" role="status"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <span>FOILRACE</span>
+      <span>South Wake Park · 2026</span>
+    </footer>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>
