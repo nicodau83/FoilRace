@@ -23,7 +23,7 @@
 
       <div class="hero-copy">
         <p class="eyebrow">SOUTH WAKE PARK · PUGET-SUR-ARGENS</p>
-        <h1>La piste ne ment jamais.</h1>
+        <h1>Chaque centième compte.</h1>
         <p class="hero-text">Tous les riders. Tous les runs. Un seul classement.</p>
       </div>
 
@@ -44,12 +44,7 @@
           <div class="season-badge">SAISON 2026</div>
         </div>
 
-        <div class="toolbar">
-          <div class="filters" role="group" aria-label="Filtrer le classement">
-            <button class="filter active" type="button" data-category="Tous">Général</button>
-            <button class="filter" type="button" data-category="Foil">Foil</button>
-            <button class="filter" type="button" data-category="Wake">Wake</button>
-          </div>
+        <div class="toolbar toolbar-search-only">
           <label class="search">
             <span class="sr-only">Rechercher un rider</span>
             <input id="searchInput" type="search" placeholder="Rechercher un rider" autocomplete="off" />
@@ -76,13 +71,6 @@
           <label>
             Pseudo du rider
             <input id="riderName" name="riderName" maxlength="24" placeholder="Ex. NicoFoil" required />
-          </label>
-          <label>
-            Catégorie
-            <select id="category" name="category">
-              <option value="Foil">Foil</option>
-              <option value="Wake">Wake</option>
-            </select>
           </label>
           <label>
             Temps
