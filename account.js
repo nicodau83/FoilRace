@@ -9,6 +9,7 @@
   const signupForm = document.querySelector("#signupForm");
   const loginForm = document.querySelector("#loginForm");
   const recoveryForm = document.querySelector("#recoveryForm");
+  const signupSuccess = document.querySelector("#signupSuccess");
   const newPasswordForm = document.querySelector("#newPasswordForm");
   const message = document.querySelector("#accountMessage");
   const adminPanel = document.querySelector("#adminPanel");
@@ -107,6 +108,8 @@
   function selectTab(tab) {
     recoveryMode = false;
     const signupSelected = tab === "signup";
+    signupSuccess.hidden = true;
+    document.querySelector(".account-tabs").hidden = false;
     signupForm.hidden = !signupSelected;
     loginForm.hidden = signupSelected;
     recoveryForm.hidden = true;
@@ -118,8 +121,21 @@
     showMessage("");
   }
 
+  function showSignupSuccess(email) {
+    recoveryMode = false;
+    document.querySelector(".account-tabs").hidden = true;
+    signupForm.hidden = true;
+    loginForm.hidden = true;
+    recoveryForm.hidden = true;
+    newPasswordForm.hidden = true;
+    signupSuccess.hidden = false;
+    document.querySelector("#signupSuccessEmail").textContent = email;
+    showMessage("");
+  }
+
   function showRecoveryRequest() {
     recoveryMode = true;
+    signupSuccess.hidden = true;
     signupForm.hidden = true;
     loginForm.hidden = true;
     recoveryForm.hidden = false;
@@ -129,6 +145,7 @@
 
   function showNewPassword() {
     recoveryMode = true;
+    signupSuccess.hidden = true;
     signupForm.hidden = true;
     loginForm.hidden = true;
     recoveryForm.hidden = true;
@@ -194,6 +211,11 @@
   document.querySelector("#loginTab").addEventListener("click", () => selectTab("login"));
   document.querySelector("#forgotPasswordButton").addEventListener("click", showRecoveryRequest);
   document.querySelector("#backToLoginButton").addEventListener("click", () => selectTab("login"));
+  document.querySelector("#signupSuccessLogin").addEventListener("click", () => {
+    selectTab("login");
+    document.querySelector("#loginEmail").value = document.querySelector("#signupSuccessEmail").textContent;
+    showMessage("Valide d’abord le lien reçu par e-mail. Tu pourras ensuite te connecter.");
+  });
 
   signupForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -220,8 +242,7 @@
       if (data.session && photo) await backend.uploadAvatar(data.user.id, photo);
       signupForm.reset();
       if (!data.session) {
-        selectTab("login");
-        showMessage("Compte créé. Confirme ton adresse e-mail, puis connecte-toi pour ajouter ta photo.");
+        showSignupSuccess(email);
       } else {
         await refreshAccount();
         showMessage("Compte créé.");
@@ -336,6 +357,14 @@
     selectTab("login");
     showMessage("Tu es déconnecté.");
   });
+
+  const authError = new URLSearchParams(window.location.search).get("error_code");
+  if (authError === "otp_expired") {
+    selectTab("login");
+    if (!dialog.open) dialog.showModal();
+    showMessage("Ce lien a expiré ou a déjà été utilisé. Saisis ton adresse puis clique sur « Renvoyer l’e-mail de confirmation ».", true);
+    window.history.replaceState({}, "", window.location.pathname);
+  }
 
   if (backend?.configured) {
     backend.client.auth.onAuthStateChange((event) => {
