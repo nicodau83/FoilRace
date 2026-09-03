@@ -15,6 +15,12 @@
     message.classList.toggle("error", error);
   }
 
+  function publishAuthState(user = null, profile = null) {
+    window.dispatchEvent(new CustomEvent("foilrace-auth-changed", {
+      detail: { user, profile }
+    }));
+  }
+
   function selectTab(tab) {
     const signupSelected = tab === "signup";
     signupForm.hidden = !signupSelected;
@@ -32,6 +38,7 @@
       guestAccount.hidden = true;
       memberAccount.hidden = true;
       accountButton.textContent = "Mon compte";
+      publishAuthState();
       return;
     }
     const { data } = await backend.client.auth.getSession();
@@ -41,6 +48,7 @@
     unavailable.hidden = true;
     if (!user) {
       accountButton.textContent = "Mon compte";
+      publishAuthState();
       return;
     }
     try {
@@ -57,7 +65,9 @@
         avatar.textContent = profile.pseudo.slice(0, 2).toUpperCase();
       }
       accountButton.textContent = profile.pseudo;
+      publishAuthState(user, profile);
     } catch (error) {
+      publishAuthState();
       showMessage(error.message || "Profil momentanément indisponible.", true);
     }
   }
@@ -83,14 +93,17 @@
       const { data, error } = await backend.client.auth.signUp({
         email,
         password,
-        options: { data: { pseudo } }
+        options: {
+          data: { pseudo },
+          emailRedirectTo: "https://nicodau83.github.io/FoilRace/"
+        }
       });
       if (error) throw error;
       if (data.session && photo) await backend.uploadAvatar(data.user.id, photo);
       signupForm.reset();
       if (!data.session) {
-        showMessage("Compte créé. Confirme ton adresse e-mail, puis connecte-toi pour ajouter ta photo.");
         selectTab("login");
+        showMessage("Compte créé. Confirme ton adresse e-mail, puis connecte-toi pour ajouter ta photo.");
       } else {
         await refreshAccount();
         showMessage("Compte créé.");
@@ -104,14 +117,19 @@
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     showMessage("Connexion…");
-    const { error } = await backend.client.auth.signInWithPassword({
-      email: document.querySelector("#loginEmail").value.trim(),
-      password: document.querySelector("#loginPassword").value
-    });
-    if (error) return showMessage(error.message, true);
-    loginForm.reset();
-    await refreshAccount();
-    showMessage("Connexion réussie.");
+    try {
+      const { error } = await backend.client.auth.signInWithPassword({
+        email: document.querySelector("#loginEmail").value.trim(),
+        password: document.querySelector("#loginPassword").value
+      });
+      if (error) throw error;
+      loginForm.reset();
+      await refreshAccount();
+      showMessage("Connexion réussie.");
+      dialog.close();
+    } catch (error) {
+      showMessage(error.message || "Connexion impossible.", true);
+    }
   });
 
   document.querySelector("#savePhoto").addEventListener("click", async () => {
@@ -119,7 +137,8 @@
     if (!file) return showMessage("Choisis d’abord une photo.", true);
     showMessage("Enregistrement de la photo…");
     try {
-      const { data } = await backend.client.auth.getUser();
+      const { data, error } = await backend.client.auth.getUser();
+      if (error || !data.user) throw new Error("Reconnecte-toi avant de modifier ta photo.");
       await backend.uploadAvatar(data.user.id, file);
       await refreshAccount();
       showMessage("Photo mise à jour.");
@@ -137,7 +156,11 @@
   });
 
   if (backend?.configured) {
-    backend.client.auth.onAuthStateChange(() => refreshAccount());
+    backend.client.auth.onAuthStateChange(() => {
+      setTimeout(refreshAccount, 0);
+    });
     refreshAccount();
+  } else {
+    publishAuthState();
   }
 })();
