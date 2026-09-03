@@ -293,7 +293,7 @@
       showMessage(error.message || "Impossible d’envoyer l’e-mail.", true);
       return;
     }
-    showMessage("E-mail de confirmation envoyé. Vérifie aussi le dossier indésirables.");
+    showMessage("Si ce compte n’était pas encore confirmé, un e-mail a été envoyé. S’il est déjà activé, connecte-toi directement ou utilise « Mot de passe oublié ».");
   });
 
   recoveryForm.addEventListener("submit", async (event) => {
@@ -302,7 +302,13 @@
     showMessage("Envoi du lien de réinitialisation…");
     const { error } = await backend.client.auth.resetPasswordForEmail(email, { redirectTo: appUrl });
     if (error) {
-      showMessage(error.message || "Impossible d’envoyer le lien.", true);
+      const limited = error.status === 429 || /rate limit|too many/i.test(error.message || "");
+      showMessage(
+        limited
+          ? "Trop de demandes d’e-mail ont été faites. Attends environ une heure avant de réessayer."
+          : (error.message || "Impossible d’envoyer le lien."),
+        true
+      );
       return;
     }
     recoveryForm.reset();
