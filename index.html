@@ -20,7 +20,11 @@
         </a>
         <div class="topbar-actions">
           <button id="installButton" class="install-button" type="button" hidden>Installer l’app</button>
-          <button id="accountButton" class="account-button" type="button">Mon compte</button>
+          <div id="guestEntryActions" class="guest-entry-actions">
+            <button id="signupEntryButton" class="account-button" type="button">Créer un compte</button>
+            <button id="loginEntryButton" class="login-entry-button" type="button">Se connecter</button>
+          </div>
+          <button id="accountButton" class="account-button" type="button" hidden>Mon compte</button>
         </div>
       </nav>
 
@@ -103,17 +107,13 @@
         </div>
         <button id="closeAccount" class="close-button" type="button" aria-label="Fermer">×</button>
       </div>
+      <p id="accountMessage" class="account-message" role="status" aria-live="polite"></p>
 
       <div id="accountUnavailable" class="account-notice" hidden>
         La création de compte sera activée dès que Supabase sera connecté.
       </div>
 
       <div id="guestAccount">
-        <div class="account-tabs" role="tablist" aria-label="Accès au compte">
-          <button id="signupTab" class="account-tab active" type="button" role="tab" aria-selected="true">Créer mon compte</button>
-          <button id="loginTab" class="account-tab" type="button" role="tab" aria-selected="false">Se connecter</button>
-        </div>
-
         <section id="signupSuccess" class="signup-success" hidden aria-live="polite">
           <span class="success-icon" aria-hidden="true">✓</span>
           <h3>Compte créé</h3>
@@ -146,6 +146,7 @@
           </label>
           <p class="privacy-note">Cette photo sera visible publiquement dans le classement.</p>
           <button class="primary-button" type="submit">Créer mon compte</button>
+          <p class="auth-switch">Tu as déjà un compte ? <button id="switchToLogin" class="text-button" type="button">Se connecter</button></p>
         </form>
 
         <form id="loginForm" class="account-form" hidden>
@@ -162,6 +163,7 @@
             <button id="forgotPasswordButton" class="text-button" type="button">Mot de passe oublié ?</button>
             <button id="resendConfirmationButton" class="text-button" type="button">Renvoyer l’e-mail de confirmation</button>
           </div>
+          <p class="auth-switch">Pas encore de compte ? <button id="switchToSignup" class="text-button" type="button">Créer un compte</button></p>
         </form>
 
         <form id="recoveryForm" class="account-form" hidden>
@@ -197,7 +199,7 @@
           Modifier ma photo
           <input id="profilePhoto" type="file" accept="image/jpeg,image/png,image/webp" />
         </label>
-        <button id="savePhoto" class="primary-button" type="button">Enregistrer la photo</button>
+        <button id="savePhoto" class="secondary-button" type="button">Mettre à jour ma photo</button>
         <button id="logoutButton" class="secondary-button" type="button">Se déconnecter</button>
 
         <section id="adminPanel" class="admin-panel" hidden aria-labelledby="adminTitle">
@@ -220,7 +222,6 @@
           <p id="adminMessage" class="account-message" role="status"></p>
         </section>
       </div>
-      <p id="accountMessage" class="account-message" role="status"></p>
     </dialog>
 
     <script src="./config.js"></script>
