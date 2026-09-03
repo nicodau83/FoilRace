@@ -286,3 +286,27 @@ footer { padding: 26px clamp(20px, 5vw, 72px); display: flex; justify-content: s
   color: var(--white);
   background: #b52b16;
 }
+
+/* Aide à la connexion et récupération du mot de passe */
+.account-links {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+.text-button {
+  padding: 3px 0;
+  border: 0;
+  color: var(--ink);
+  background: transparent;
+  font-weight: 800;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.text-button:hover { color: #b52b16; }
+.auth-help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
