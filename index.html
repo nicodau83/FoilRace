@@ -114,6 +114,15 @@
           <button id="loginTab" class="account-tab" type="button" role="tab" aria-selected="false">Se connecter</button>
         </div>
 
+        <section id="signupSuccess" class="signup-success" hidden aria-live="polite">
+          <span class="success-icon" aria-hidden="true">✓</span>
+          <h3>Compte créé</h3>
+          <p>Un e-mail de confirmation a été envoyé à <strong id="signupSuccessEmail"></strong>.</p>
+          <p>Ouvre cet e-mail et clique sur le lien pour activer ton compte. Tu ne pourras pas te connecter avant cette validation.</p>
+          <p class="privacy-note">Pense à vérifier le dossier indésirables.</p>
+          <button id="signupSuccessLogin" class="primary-button" type="button">Aller à la connexion</button>
+        </section>
+
         <form id="signupForm" class="account-form">
           <label>
             Pseudo public
