@@ -127,6 +127,10 @@
             Mot de passe
             <input id="signupPassword" type="password" minlength="8" autocomplete="new-password" required />
           </label>
+          <label>
+            Confirmer le mot de passe
+            <input id="signupPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required />
+          </label>
           <label class="photo-picker">
             Photo de profil <span>facultative · 5 Mo maximum</span>
             <input id="signupPhoto" type="file" accept="image/jpeg,image/png,image/webp" />
@@ -145,6 +149,33 @@
             <input id="loginPassword" type="password" autocomplete="current-password" required />
           </label>
           <button class="primary-button" type="submit">Se connecter</button>
+          <div class="account-links">
+            <button id="forgotPasswordButton" class="text-button" type="button">Mot de passe oublié ?</button>
+            <button id="resendConfirmationButton" class="text-button" type="button">Renvoyer l’e-mail de confirmation</button>
+          </div>
+        </form>
+
+        <form id="recoveryForm" class="account-form" hidden>
+          <p class="auth-help">Indique ton adresse e-mail : tu recevras un lien sécurisé pour choisir un nouveau mot de passe.</p>
+          <label>
+            Adresse e-mail
+            <input id="recoveryEmail" type="email" autocomplete="email" required />
+          </label>
+          <button class="primary-button" type="submit">Envoyer le lien</button>
+          <button id="backToLoginButton" class="text-button" type="button">Retour à la connexion</button>
+        </form>
+
+        <form id="newPasswordForm" class="account-form" hidden>
+          <p class="auth-help">Choisis ton nouveau mot de passe.</p>
+          <label>
+            Nouveau mot de passe
+            <input id="newPassword" type="password" minlength="8" autocomplete="new-password" required />
+          </label>
+          <label>
+            Confirmer le nouveau mot de passe
+            <input id="newPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required />
+          </label>
+          <button class="primary-button" type="submit">Enregistrer le nouveau mot de passe</button>
         </form>
       </div>
 
