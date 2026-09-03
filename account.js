@@ -2,6 +2,10 @@
   const backend = window.foilRaceBackend;
   const dialog = document.querySelector("#accountDialog");
   const accountButton = document.querySelector("#accountButton");
+  const signupEntryButton = document.querySelector("#signupEntryButton");
+  const loginEntryButton = document.querySelector("#loginEntryButton");
+  const guestEntryActions = document.querySelector("#guestEntryActions");
+  const accountTitle = document.querySelector("#accountTitle");
   const closeButton = document.querySelector("#closeAccount");
   const unavailable = document.querySelector("#accountUnavailable");
   const guestAccount = document.querySelector("#guestAccount");
@@ -22,6 +26,8 @@
   function showMessage(text, error = false) {
     message.textContent = text;
     message.classList.toggle("error", error);
+    message.hidden = !text;
+    if (text && dialog.open) dialog.scrollTop = 0;
   }
 
   function publishAuthState(user = null, profile = null) {
@@ -107,23 +113,18 @@
 
   function selectTab(tab) {
     recoveryMode = false;
-    const signupSelected = tab === "signup";
     signupSuccess.hidden = true;
-    document.querySelector(".account-tabs").hidden = false;
-    signupForm.hidden = !signupSelected;
-    loginForm.hidden = signupSelected;
+    signupForm.hidden = tab !== "signup";
+    loginForm.hidden = tab !== "login";
     recoveryForm.hidden = true;
     newPasswordForm.hidden = true;
-    document.querySelector("#signupTab").classList.toggle("active", signupSelected);
-    document.querySelector("#loginTab").classList.toggle("active", !signupSelected);
-    document.querySelector("#signupTab").setAttribute("aria-selected", String(signupSelected));
-    document.querySelector("#loginTab").setAttribute("aria-selected", String(!signupSelected));
+    accountTitle.textContent = tab === "signup" ? "Créer un compte" : "Se connecter";
     showMessage("");
   }
 
   function showSignupSuccess(email) {
     recoveryMode = false;
-    document.querySelector(".account-tabs").hidden = true;
+    accountTitle.textContent = "Vérifie tes e-mails";
     signupForm.hidden = true;
     loginForm.hidden = true;
     recoveryForm.hidden = true;
@@ -135,6 +136,7 @@
 
   function showRecoveryRequest() {
     recoveryMode = true;
+    accountTitle.textContent = "Mot de passe oublié";
     signupSuccess.hidden = true;
     signupForm.hidden = true;
     loginForm.hidden = true;
@@ -145,6 +147,7 @@
 
   function showNewPassword() {
     recoveryMode = true;
+    accountTitle.textContent = "Nouveau mot de passe";
     signupSuccess.hidden = true;
     signupForm.hidden = true;
     loginForm.hidden = true;
@@ -162,6 +165,8 @@
       unavailable.hidden = false;
       guestAccount.hidden = true;
       memberAccount.hidden = true;
+      guestEntryActions.hidden = true;
+      accountButton.hidden = false;
       accountButton.textContent = "Mon compte";
       publishAuthState();
       if (adminPanel) adminPanel.hidden = true;
@@ -169,6 +174,8 @@
     }
     const { data } = await backend.client.auth.getSession();
     const user = data.session?.user;
+    guestEntryActions.hidden = Boolean(user);
+    accountButton.hidden = !user;
     guestAccount.hidden = recoveryMode ? false : Boolean(user);
     memberAccount.hidden = recoveryMode ? true : !user;
     unavailable.hidden = true;
@@ -192,6 +199,7 @@
         avatar.textContent = profile.pseudo.slice(0, 2).toUpperCase();
       }
       accountButton.textContent = profile.pseudo;
+      accountTitle.textContent = "Mon profil";
       publishAuthState(user, profile);
       await loadAdminPanel(user);
     } catch (error) {
@@ -200,15 +208,24 @@
     }
   }
 
-  accountButton.addEventListener("click", async () => {
+  async function openAccount(view) {
     showMessage("");
     await refreshAccount();
-    dialog.showModal();
-  });
+    if (!dialog.open) dialog.showModal();
+    if (!memberAccount.hidden) {
+      accountTitle.textContent = "Mon profil";
+      return;
+    }
+    selectTab(view);
+  }
+
+  signupEntryButton.addEventListener("click", () => openAccount("signup"));
+  loginEntryButton.addEventListener("click", () => openAccount("login"));
+  accountButton.addEventListener("click", () => openAccount("login"));
   closeButton.addEventListener("click", () => dialog.close());
   dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
-  document.querySelector("#signupTab").addEventListener("click", () => selectTab("signup"));
-  document.querySelector("#loginTab").addEventListener("click", () => selectTab("login"));
+  document.querySelector("#switchToSignup").addEventListener("click", () => selectTab("signup"));
+  document.querySelector("#switchToLogin").addEventListener("click", () => selectTab("login"));
   document.querySelector("#forgotPasswordButton").addEventListener("click", showRecoveryRequest);
   document.querySelector("#backToLoginButton").addEventListener("click", () => selectTab("login"));
   document.querySelector("#signupSuccessLogin").addEventListener("click", () => {
