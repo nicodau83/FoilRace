@@ -12,9 +12,11 @@ Application web installable (PWA) pour consulter le classement FOILRACE de South
 
 ## Suite prévue
 
-1. Connecter Supabase pour partager riders et chronos entre tous les téléphones.
-2. Ajouter l'authentification et les comptes riders. Chaque rider pourra choisir une photo de profil, affichée en médaillon dans le classement. La photo restera facultative et les initiales serviront de solution de remplacement.
-3. Créer l'API d'entrée des chronos ESP32/LoRa.
+1. Créer le projet Supabase et exécuter `supabase/schema.sql`.
+2. Renseigner l'URL du projet et la clé publique `anon` dans `config.js`.
+3. Créer l'API d'entrée sécurisée des chronos ESP32/LoRa.
 4. Publier sur GitHub Pages.
+
+La création de compte, la connexion, le classement partagé et les photos de profil sont maintenant préparés. Sans configuration Supabase, l'application reste automatiquement en mode démonstration local.
 
 Les temps sont stockés sous forme de centièmes entiers afin d'éviter les erreurs d'arrondi.
