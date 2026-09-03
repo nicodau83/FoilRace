@@ -59,8 +59,32 @@ create policy "Le rider enregistre son chrono"
 
 grant usage on schema public to anon, authenticated;
 grant select on public.profiles, public.runs to anon, authenticated;
+
+
+drop policy if exists "Admin lit tous les chronos" on public.runs;
+create policy "Admin lit tous les chronos"
+  on public.runs for select
+  to authenticated
+  using ((select auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+drop policy if exists "Admin supprime les chronos" on public.runs;
+create policy "Admin supprime les chronos"
+  on public.runs for delete
+  to authenticated
+  using ((select auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+drop policy if exists "Admin supprime les riders" on public.profiles;
+create policy "Admin supprime les riders"
+  on public.profiles for delete
+  to authenticated
+  using (
+    (select auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+    and id <> (select auth.uid())
+  );
+
 grant insert (rider_id, elapsed_centiseconds, source, validated, season) on public.runs to authenticated;
 grant usage, select on sequence public.runs_id_seq to authenticated;
+grant delete on public.runs, public.profiles to authenticated;
 grant update (avatar_path, updated_at) on public.profiles to authenticated;
 
 create or replace function public.handle_new_user()
@@ -150,4 +174,14 @@ create policy "Le rider supprime sa photo"
     bucket_id = 'avatars'
     and owner_id = (select auth.uid())::text
     and (storage.foldername(name))[1] = (select auth.uid())::text
+  );
+
+
+drop policy if exists "Admin supprime les photos" on storage.objects;
+create policy "Admin supprime les photos"
+  on storage.objects for delete
+  to authenticated
+  using (
+    bucket_id = 'avatars'
+    and (select auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
   );
