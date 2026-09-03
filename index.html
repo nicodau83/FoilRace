@@ -44,7 +44,10 @@
             <p class="section-number">01 / CLASSEMENT</p>
             <h2 id="rankingTitle">Meilleurs temps</h2>
           </div>
-          <div class="season-badge">SAISON 2026</div>
+          <label class="season-badge" for="seasonSelect">
+            <span>SAISON</span>
+            <select id="seasonSelect" aria-label="Choisir la saison"></select>
+          </label>
         </div>
 
         <div class="toolbar toolbar-search-only">
@@ -59,7 +62,7 @@
             <span>Rang</span><span>Rider</span><span>Runs</span><span>Meilleur temps</span>
           </div>
           <ol id="rankingList" class="ranking-list" aria-live="polite"></ol>
-          <p id="emptyState" class="empty-state" hidden>Aucun rider ne correspond à cette recherche.</p>
+          <p id="emptyState" class="empty-state" hidden>Aucun chrono enregistré pour cette saison.</p>
         </div>
       </section>
 
@@ -67,14 +70,11 @@
         <div class="run-copy">
           <p class="section-number">02 / NOUVEAU RUN</p>
           <h2 id="runTitle">Enregistrer un chrono</h2>
-          <p>Ce formulaire sert pour la première version de test. Ensuite, les pylônes ESP32 enverront les temps automatiquement.</p>
+          <p id="runIdentity">Connecte-toi à ton compte rider pour enregistrer un chrono.</p>
         </div>
 
         <form id="runForm" class="run-form">
-          <label>
-            Pseudo du rider
-            <input id="riderName" name="riderName" maxlength="24" placeholder="Ex. NicoFoil" required />
-          </label>
+          <p id="runRider" class="run-rider">Connexion requise</p>
           <label>
             Temps
             <div class="time-input">
@@ -84,7 +84,7 @@
               <span>s</span>
             </div>
           </label>
-          <button class="primary-button" type="submit">Ajouter au classement</button>
+          <button id="submitRun" class="primary-button" type="submit" disabled>Se connecter pour enregistrer</button>
           <p id="formMessage" class="form-message" role="status"></p>
         </form>
       </section>
