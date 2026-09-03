@@ -159,6 +159,26 @@
         </label>
         <button id="savePhoto" class="primary-button" type="button">Enregistrer la photo</button>
         <button id="logoutButton" class="secondary-button" type="button">Se déconnecter</button>
+
+        <section id="adminPanel" class="admin-panel" hidden aria-labelledby="adminTitle">
+          <div class="admin-heading">
+            <p class="section-number">ADMINISTRATION</p>
+            <h3 id="adminTitle">Contrôle du classement</h3>
+          </div>
+          <button id="refreshAdmin" class="secondary-button" type="button">Actualiser</button>
+
+          <div class="admin-block">
+            <h4>Chronos enregistrés</h4>
+            <div id="adminRuns" class="admin-list"></div>
+          </div>
+
+          <div class="admin-block">
+            <h4>Riders</h4>
+            <p class="admin-warning">Supprimer un rider efface son profil et tous ses chronos.</p>
+            <div id="adminRiders" class="admin-list"></div>
+          </div>
+          <p id="adminMessage" class="account-message" role="status"></p>
+        </section>
       </div>
       <p id="accountMessage" class="account-message" role="status"></p>
     </dialog>
