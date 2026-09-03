@@ -234,3 +234,55 @@ footer { padding: 26px clamp(20px, 5vw, 72px); display: flex; justify-content: s
   cursor: not-allowed;
   opacity: .48;
 }
+
+
+/* Administration — visible uniquement pour le compte autorisé */
+.admin-panel {
+  margin-top: 26px;
+  padding-top: 26px;
+  border-top: 2px solid var(--ink);
+}
+.admin-heading h3 {
+  margin: 0 0 18px;
+  font-size: 28px;
+  letter-spacing: -.03em;
+}
+.admin-block {
+  margin-top: 24px;
+}
+.admin-block h4 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.admin-list {
+  display: grid;
+  gap: 8px;
+}
+.admin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  background: var(--white);
+  font-size: 13px;
+}
+.admin-warning {
+  color: #a52b17;
+  font-size: 12px;
+}
+.danger-button {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  border: 1px solid #b52b16;
+  color: #b52b16;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 850;
+}
+.danger-button:hover {
+  color: var(--white);
+  background: #b52b16;
+}
