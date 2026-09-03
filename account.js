@@ -8,11 +8,15 @@
   const memberAccount = document.querySelector("#memberAccount");
   const signupForm = document.querySelector("#signupForm");
   const loginForm = document.querySelector("#loginForm");
+  const recoveryForm = document.querySelector("#recoveryForm");
+  const newPasswordForm = document.querySelector("#newPasswordForm");
   const message = document.querySelector("#accountMessage");
   const adminPanel = document.querySelector("#adminPanel");
   const adminRuns = document.querySelector("#adminRuns");
   const adminRiders = document.querySelector("#adminRiders");
   const adminMessage = document.querySelector("#adminMessage");
+  const appUrl = "https://nicodau83.github.io/FoilRace/";
+  let recoveryMode = false;
 
   function showMessage(text, error = false) {
     message.textContent = text;
@@ -101,14 +105,39 @@
   }
 
   function selectTab(tab) {
+    recoveryMode = false;
     const signupSelected = tab === "signup";
     signupForm.hidden = !signupSelected;
     loginForm.hidden = signupSelected;
+    recoveryForm.hidden = true;
+    newPasswordForm.hidden = true;
     document.querySelector("#signupTab").classList.toggle("active", signupSelected);
     document.querySelector("#loginTab").classList.toggle("active", !signupSelected);
     document.querySelector("#signupTab").setAttribute("aria-selected", String(signupSelected));
     document.querySelector("#loginTab").setAttribute("aria-selected", String(!signupSelected));
     showMessage("");
+  }
+
+  function showRecoveryRequest() {
+    recoveryMode = true;
+    signupForm.hidden = true;
+    loginForm.hidden = true;
+    recoveryForm.hidden = false;
+    newPasswordForm.hidden = true;
+    showMessage("");
+  }
+
+  function showNewPassword() {
+    recoveryMode = true;
+    signupForm.hidden = true;
+    loginForm.hidden = true;
+    recoveryForm.hidden = true;
+    newPasswordForm.hidden = false;
+    guestAccount.hidden = false;
+    memberAccount.hidden = true;
+    unavailable.hidden = true;
+    if (!dialog.open) dialog.showModal();
+    showMessage("Le lien est validé. Choisis maintenant ton nouveau mot de passe.");
   }
 
   async function refreshAccount() {
@@ -123,8 +152,8 @@
     }
     const { data } = await backend.client.auth.getSession();
     const user = data.session?.user;
-    guestAccount.hidden = Boolean(user);
-    memberAccount.hidden = !user;
+    guestAccount.hidden = recoveryMode ? false : Boolean(user);
+    memberAccount.hidden = recoveryMode ? true : !user;
     unavailable.hidden = true;
     if (!user) {
       accountButton.textContent = "Mon compte";
@@ -163,13 +192,20 @@
   dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
   document.querySelector("#signupTab").addEventListener("click", () => selectTab("signup"));
   document.querySelector("#loginTab").addEventListener("click", () => selectTab("login"));
+  document.querySelector("#forgotPasswordButton").addEventListener("click", showRecoveryRequest);
+  document.querySelector("#backToLoginButton").addEventListener("click", () => selectTab("login"));
 
   signupForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const pseudo = document.querySelector("#signupPseudo").value.trim();
     const email = document.querySelector("#signupEmail").value.trim();
     const password = document.querySelector("#signupPassword").value;
+    const passwordConfirm = document.querySelector("#signupPasswordConfirm").value;
     const photo = document.querySelector("#signupPhoto").files[0];
+    if (password !== passwordConfirm) {
+      showMessage("Les deux mots de passe ne correspondent pas.", true);
+      return;
+    }
     showMessage("Création du compte…");
     try {
       const { data, error } = await backend.client.auth.signUp({
@@ -177,7 +213,7 @@
         password,
         options: {
           data: { pseudo },
-          emailRedirectTo: "https://nicodau83.github.io/FoilRace/"
+          emailRedirectTo: appUrl
         }
       });
       if (error) throw error;
@@ -210,8 +246,67 @@
       showMessage("Connexion réussie.");
       dialog.close();
     } catch (error) {
-      showMessage(error.message || "Connexion impossible.", true);
+      const invalid = /invalid login credentials/i.test(error.message || "");
+      showMessage(
+        invalid
+          ? "Adresse ou mot de passe incorrect. Si ton compte vient d’être créé, confirme d’abord l’e-mail reçu ou utilise « Mot de passe oublié »."
+          : (error.message || "Connexion impossible."),
+        true
+      );
     }
+  });
+
+  document.querySelector("#resendConfirmationButton").addEventListener("click", async () => {
+    const email = document.querySelector("#loginEmail").value.trim();
+    if (!email) {
+      showMessage("Saisis d’abord ton adresse e-mail.", true);
+      return;
+    }
+    showMessage("Envoi de l’e-mail de confirmation…");
+    const { error } = await backend.client.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: appUrl }
+    });
+    if (error) {
+      showMessage(error.message || "Impossible d’envoyer l’e-mail.", true);
+      return;
+    }
+    showMessage("E-mail de confirmation envoyé. Vérifie aussi le dossier indésirables.");
+  });
+
+  recoveryForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = document.querySelector("#recoveryEmail").value.trim();
+    showMessage("Envoi du lien de réinitialisation…");
+    const { error } = await backend.client.auth.resetPasswordForEmail(email, { redirectTo: appUrl });
+    if (error) {
+      showMessage(error.message || "Impossible d’envoyer le lien.", true);
+      return;
+    }
+    recoveryForm.reset();
+    showMessage("Si un compte correspond à cette adresse, un lien vient d’être envoyé. Vérifie aussi le dossier indésirables.");
+  });
+
+  newPasswordForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const password = document.querySelector("#newPassword").value;
+    const passwordConfirm = document.querySelector("#newPasswordConfirm").value;
+    if (password !== passwordConfirm) {
+      showMessage("Les deux mots de passe ne correspondent pas.", true);
+      return;
+    }
+    showMessage("Mise à jour du mot de passe…");
+    const { error } = await backend.client.auth.updateUser({ password });
+    if (error) {
+      showMessage(error.message || "Impossible de modifier le mot de passe.", true);
+      return;
+    }
+    newPasswordForm.reset();
+    await backend.client.auth.signOut();
+    recoveryMode = false;
+    selectTab("login");
+    showMessage("Mot de passe modifié. Tu peux maintenant te connecter.");
   });
 
   document.querySelector("#savePhoto").addEventListener("click", async () => {
@@ -243,7 +338,11 @@
   });
 
   if (backend?.configured) {
-    backend.client.auth.onAuthStateChange(() => {
+    backend.client.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        showNewPassword();
+        return;
+      }
       setTimeout(refreshAccount, 0);
     });
     refreshAccount();
