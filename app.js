@@ -10,6 +10,7 @@ const SAMPLE_RUNS = [
 
 const STORAGE_KEY = "foilrace-runs-v1";
 let deferredInstallPrompt = null;
+let sharedRanking = null;
 
 const rankingList = document.querySelector("#rankingList");
 const emptyState = document.querySelector("#emptyState");
@@ -19,11 +20,24 @@ const formMessage = document.querySelector("#formMessage");
 const installButton = document.querySelector("#installButton");
 
 function readRuns() {
+  if (sharedRanking) return sharedRanking;
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
     return Array.isArray(stored) ? stored : SAMPLE_RUNS;
   } catch {
     return SAMPLE_RUNS;
+  }
+}
+
+async function loadSharedRanking() {
+  const backend = window.foilRaceBackend;
+  if (!backend?.configured) return;
+  try {
+    sharedRanking = await backend.getLeaderboard();
+    document.querySelector(".run-section").hidden = true;
+    renderRanking();
+  } catch (error) {
+    console.error("Classement partagé indisponible", error);
   }
 }
 
@@ -67,6 +81,7 @@ function createAvatar(entry) {
 }
 
 function buildRanking(runs) {
+  if (sharedRanking) return runs;
   const riders = new Map();
   runs.forEach((run) => {
     const key = run.rider.toLocaleLowerCase("fr");
@@ -157,3 +172,5 @@ if ("serviceWorker" in navigator) {
 }
 
 renderRanking();
+loadSharedRanking();
+window.addEventListener("foilrace-profile-updated", loadSharedRanking);
