@@ -122,6 +122,7 @@ main { padding: 76px clamp(20px, 5vw, 72px) 96px; }
 .rank { font-size: 26px; font-weight: 950; font-variant-numeric: tabular-nums; }
 .rider { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .avatar { width: 42px; height: 42px; flex: 0 0 42px; display: grid; place-items: center; border-radius: 50%; color: var(--ink); background: var(--blue); font-size: 12px; font-weight: 950; }
+.avatar img { width: 100%; height: 100%; display: block; border-radius: inherit; object-fit: cover; }
 .ranking-row:nth-child(2n) .avatar { background: var(--acid); }
 .rider-name { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 17px; font-weight: 850; white-space: nowrap; }
 .runs { color: var(--muted); font-size: 13px; }
