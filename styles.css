@@ -336,3 +336,69 @@ footer { padding: 26px clamp(20px, 5vw, 72px); display: flex; justify-content: s
   font-size: 25px;
   font-weight: 950;
 }
+
+/* Parcours de compte séparés et lisibles */
+.guest-entry-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.login-entry-button {
+  padding: 10px 16px;
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: 999px;
+  color: var(--white);
+  background: transparent;
+  font-weight: 800;
+}
+.account-message[hidden] { display: none; }
+.account-message:not([hidden]) {
+  margin: 20px 0 4px;
+  padding: 14px 16px;
+  border-left: 4px solid #5d8e12;
+  color: #284600;
+  background: #efffd0;
+  font-weight: 750;
+  line-height: 1.45;
+}
+.account-message.error:not([hidden]) {
+  border-left-color: #b52b16;
+  color: #7d1b0c;
+  background: #ffe1da;
+}
+.auth-switch {
+  margin: 4px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+.auth-switch .text-button { display: inline; }
+.account-form > .primary-button { width: 100%; }
+@media (max-width: 720px) {
+  .topbar { align-items: flex-start; }
+  .topbar-actions { align-items: flex-end; flex-direction: column; }
+  .guest-entry-actions { gap: 6px; }
+  .guest-entry-actions button { padding: 9px 11px; font-size: 12px; }
+  .account-dialog {
+    width: 100%;
+    max-height: 100dvh;
+    min-height: 100dvh;
+    margin: 0;
+    padding: 22px 18px calc(28px + env(safe-area-inset-bottom));
+  }
+  .dialog-header {
+    position: sticky;
+    z-index: 2;
+    top: -22px;
+    padding: 22px 0 12px;
+    background: var(--paper);
+  }
+  .account-message:not([hidden]) {
+    position: sticky;
+    z-index: 1;
+    top: 90px;
+    box-shadow: 0 8px 18px rgba(7,26,32,.12);
+  }
+}
