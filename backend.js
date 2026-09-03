@@ -83,6 +83,44 @@
     return publicAvatarUrl(path);
   }
 
+  function isAdmin(user) {
+    return user?.app_metadata?.role === "admin";
+  }
+
+  async function getAdminData() {
+    const { data: userData, error: userError } = await client.auth.getUser();
+    if (userError || !isAdmin(userData.user)) throw new Error("Accès administrateur refusé.");
+
+    const [profilesResult, runsResult] = await Promise.all([
+      client.from("profiles").select("id,pseudo,avatar_path,created_at").order("pseudo"),
+      client.from("runs").select("id,rider_id,elapsed_centiseconds,season,recorded_at,validated").order("recorded_at", { ascending: false })
+    ]);
+    if (profilesResult.error) throw profilesResult.error;
+    if (runsResult.error) throw runsResult.error;
+
+    const profiles = profilesResult.data;
+    const pseudoById = new Map(profiles.map((profile) => [profile.id, profile.pseudo]));
+    const runs = runsResult.data.map((run) => ({
+      ...run,
+      pseudo: pseudoById.get(run.rider_id) || "Rider supprimé"
+    }));
+    return { profiles, runs, adminUserId: userData.user.id };
+  }
+
+  async function deleteRun(runId) {
+    const { error } = await client.from("runs").delete().eq("id", runId);
+    if (error) throw error;
+  }
+
+  async function deleteRider(profile) {
+    if (profile.avatar_path) {
+      const { error: storageError } = await client.storage.from("avatars").remove([profile.avatar_path]);
+      if (storageError) throw storageError;
+    }
+    const { error } = await client.from("profiles").delete().eq("id", profile.id);
+    if (error) throw error;
+  }
+
   window.foilRaceBackend = {
     configured,
     client,
@@ -90,6 +128,10 @@
     getLeaderboard,
     getProfile,
     addRun,
-    uploadAvatar
+    uploadAvatar,
+    isAdmin,
+    getAdminData,
+    deleteRun,
+    deleteRider
   };
 })();
