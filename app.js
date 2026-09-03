@@ -43,11 +43,35 @@ function initials(name) {
   return name.replace(/[^a-z0-9]/gi, "").slice(0, 2).toUpperCase() || "FR";
 }
 
+function createAvatar(entry) {
+  const avatar = document.createElement("span");
+  avatar.className = "avatar";
+
+  if (!entry.avatarUrl) {
+    avatar.textContent = initials(entry.rider);
+    avatar.setAttribute("aria-hidden", "true");
+    return avatar;
+  }
+
+  const photo = document.createElement("img");
+  photo.src = entry.avatarUrl;
+  photo.alt = `Photo de ${entry.rider}`;
+  photo.loading = "lazy";
+  photo.referrerPolicy = "no-referrer";
+  photo.addEventListener("error", () => {
+    avatar.replaceChildren(document.createTextNode(initials(entry.rider)));
+    avatar.setAttribute("aria-hidden", "true");
+  }, { once: true });
+  avatar.append(photo);
+  return avatar;
+}
+
 function buildRanking(runs) {
   const riders = new Map();
   runs.forEach((run) => {
     const key = run.rider.toLocaleLowerCase("fr");
-    const current = riders.get(key) || { rider: run.rider, runs: 0, best: Infinity };
+    const current = riders.get(key) || { rider: run.rider, avatarUrl: null, runs: 0, best: Infinity };
+    current.avatarUrl = run.avatarUrl || current.avatarUrl;
     current.runs += 1;
     current.best = Math.min(current.best, run.time);
     riders.set(key, current);
@@ -67,12 +91,13 @@ function renderRanking() {
     item.innerHTML = `
       <span class="rank">${String(index + 1).padStart(2, "0")}</span>
       <span class="rider">
-        <span class="avatar" aria-hidden="true">${initials(entry.rider)}</span>
+        <span class="avatar-slot"></span>
         <span><span class="rider-name"></span></span>
       </span>
       <span class="runs">${entry.runs} run${entry.runs > 1 ? "s" : ""}</span>
       <span class="best-time">${formatTime(entry.best)}</span>`;
     item.querySelector(".rider-name").textContent = entry.rider;
+    item.querySelector(".avatar-slot").replaceWith(createAvatar(entry));
     return item;
   }));
 
@@ -97,7 +122,13 @@ runForm.addEventListener("submit", (event) => {
   }
 
   const runs = readRuns();
-  runs.push({ rider, time: seconds * 100 + centiseconds, recordedAt: new Date().toISOString() });
+  const existingProfile = runs.find((run) => run.rider.toLocaleLowerCase("fr") === rider.toLocaleLowerCase("fr"));
+  runs.push({
+    rider,
+    avatarUrl: existingProfile?.avatarUrl || null,
+    time: seconds * 100 + centiseconds,
+    recordedAt: new Date().toISOString()
+  });
   saveRuns(runs);
   runForm.reset();
   formMessage.textContent = `Run de ${rider} enregistré en ${formatTime(seconds * 100 + centiseconds)}.`;
