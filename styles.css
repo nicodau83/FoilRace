@@ -207,3 +207,30 @@ footer { padding: 26px clamp(20px, 5vw, 72px); display: flex; justify-content: s
   .ranking-row:nth-child(3) { animation-delay: .08s; }
   @keyframes reveal { from { opacity: 0; transform: translateY(7px); } }
 }
+
+
+/* Sélecteur de saison et saisie réservée au rider connecté */
+.season-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.season-badge select {
+  border: 0;
+  color: var(--ink);
+  background: transparent;
+  font-weight: 950;
+  cursor: pointer;
+}
+.run-rider {
+  grid-column: 1 / -1;
+  margin: 0 0 4px;
+  color: var(--acid);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: .48;
+}
