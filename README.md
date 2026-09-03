@@ -13,7 +13,7 @@ Application web installable (PWA) pour consulter le classement FOILRACE de South
 ## Suite prévue
 
 1. Connecter Supabase pour partager riders et chronos entre tous les téléphones.
-2. Ajouter l'authentification et les comptes riders.
+2. Ajouter l'authentification et les comptes riders. Chaque rider pourra choisir une photo de profil, affichée en médaillon dans le classement. La photo restera facultative et les initiales serviront de solution de remplacement.
 3. Créer l'API d'entrée des chronos ESP32/LoRa.
 4. Publier sur GitHub Pages.
 
