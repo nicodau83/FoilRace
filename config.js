@@ -1,6 +1,6 @@
-// Renseigner ces deux valeurs après la création du projet Supabase.
-// La clé "anon" est conçue pour être publique. Ne jamais placer la clé "service_role" ici.
+// Configuration publique Supabase de FOILRACE.
+// Cette clé publishable est conçue pour le navigateur. Ne jamais placer de clé secrète ici.
 window.FOILRACE_CONFIG = {
-  supabaseUrl: "",
-  supabaseAnonKey: ""
+  supabaseUrl: "https://dfupehfmwrzbvvpbfjnv.supabase.co",
+  supabaseAnonKey: "sb_publishable_ox4IhdCKdb5GAsuQXekyPw_yQchFmYd"
 };
