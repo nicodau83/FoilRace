@@ -1,4 +1,5 @@
--- FOILRACE — schéma Supabase initial
+-- FOILRACE — schéma Supabase
+-- Auth e-mail/mot de passe, classement public et avatars contrôlés par RLS.
 
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -26,24 +27,47 @@ create index if not exists runs_rider_time_idx
 alter table public.profiles enable row level security;
 alter table public.runs enable row level security;
 
+drop policy if exists "Classement public : profils lisibles" on public.profiles;
 create policy "Classement public : profils lisibles"
-  on public.profiles for select using (true);
+  on public.profiles for select
+  to anon, authenticated
+  using (true);
+
+drop policy if exists "Le rider modifie son profil" on public.profiles;
 create policy "Le rider modifie son profil"
-  on public.profiles for update using (auth.uid() = id) with check (auth.uid() = id);
+  on public.profiles for update
+  to authenticated
+  using ((select auth.uid()) = id)
+  with check ((select auth.uid()) = id);
+
+drop policy if exists "Classement public : runs validés lisibles" on public.runs;
 create policy "Classement public : runs validés lisibles"
-  on public.runs for select using (validated = true);
+  on public.runs for select
+  to anon, authenticated
+  using (validated = true);
+
+grant usage on schema public to anon, authenticated;
+grant select on public.profiles, public.runs to anon, authenticated;
+grant update (avatar_path, updated_at) on public.profiles to authenticated;
 
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
-security definer set search_path = ''
+security definer
+set search_path = ''
 as $$
 begin
   insert into public.profiles (id, pseudo)
-  values (new.id, coalesce(nullif(trim(new.raw_user_meta_data ->> 'pseudo'), ''), 'Rider-' || left(new.id::text, 6)));
+  values (
+    new.id,
+    coalesce(nullif(trim(new.raw_user_meta_data ->> 'pseudo'), ''), 'Rider-' || left(new.id::text, 6))
+  );
   return new;
 end;
 $$;
+
+-- La fonction privilégiée est réservée au trigger, jamais aux clients web.
+revoke all on function public.handle_new_user() from public, anon, authenticated;
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
@@ -74,12 +98,42 @@ on conflict (id) do update set
   file_size_limit = excluded.file_size_limit,
   allowed_mime_types = excluded.allowed_mime_types;
 
+drop policy if exists "Photos publiques en lecture" on storage.objects;
 create policy "Photos publiques en lecture"
-  on storage.objects for select using (bucket_id = 'avatars');
+  on storage.objects for select
+  to anon, authenticated
+  using (bucket_id = 'avatars');
+
+drop policy if exists "Le rider ajoute sa photo" on storage.objects;
 create policy "Le rider ajoute sa photo"
-  on storage.objects for insert to authenticated
-  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+  on storage.objects for insert
+  to authenticated
+  with check (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = (select auth.uid())::text
+  );
+
+drop policy if exists "Le rider remplace sa photo" on storage.objects;
 create policy "Le rider remplace sa photo"
-  on storage.objects for update to authenticated
-  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text)
-  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+  on storage.objects for update
+  to authenticated
+  using (
+    bucket_id = 'avatars'
+    and owner_id = (select auth.uid())::text
+    and (storage.foldername(name))[1] = (select auth.uid())::text
+  )
+  with check (
+    bucket_id = 'avatars'
+    and owner_id = (select auth.uid())::text
+    and (storage.foldername(name))[1] = (select auth.uid())::text
+  );
+
+drop policy if exists "Le rider supprime sa photo" on storage.objects;
+create policy "Le rider supprime sa photo"
+  on storage.objects for delete
+  to authenticated
+  using (
+    bucket_id = 'avatars'
+    and owner_id = (select auth.uid())::text
+    and (storage.foldername(name))[1] = (select auth.uid())::text
+  );
