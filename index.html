@@ -18,7 +18,10 @@
           <span class="brand-mark" aria-hidden="true">FR</span>
           <span>FOILRACE</span>
         </a>
-        <button id="installButton" class="install-button" type="button" hidden>Installer l’app</button>
+        <div class="topbar-actions">
+          <button id="installButton" class="install-button" type="button" hidden>Installer l’app</button>
+          <button id="accountButton" class="account-button" type="button">Mon compte</button>
+        </div>
       </nav>
 
       <div class="hero-copy">
@@ -92,6 +95,78 @@
       <span>South Wake Park · 2026</span>
     </footer>
 
+    <dialog id="accountDialog" class="account-dialog" aria-labelledby="accountTitle">
+      <div class="dialog-header">
+        <div>
+          <p class="section-number">COMPTE RIDER</p>
+          <h2 id="accountTitle">Mon profil</h2>
+        </div>
+        <button id="closeAccount" class="close-button" type="button" aria-label="Fermer">×</button>
+      </div>
+
+      <div id="accountUnavailable" class="account-notice" hidden>
+        La création de compte sera activée dès que Supabase sera connecté.
+      </div>
+
+      <div id="guestAccount">
+        <div class="account-tabs" role="tablist" aria-label="Accès au compte">
+          <button id="signupTab" class="account-tab active" type="button" role="tab" aria-selected="true">Créer mon compte</button>
+          <button id="loginTab" class="account-tab" type="button" role="tab" aria-selected="false">Se connecter</button>
+        </div>
+
+        <form id="signupForm" class="account-form">
+          <label>
+            Pseudo public
+            <input id="signupPseudo" maxlength="24" autocomplete="nickname" placeholder="Ex. NicoFoil" required />
+          </label>
+          <label>
+            Adresse e-mail
+            <input id="signupEmail" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            Mot de passe
+            <input id="signupPassword" type="password" minlength="8" autocomplete="new-password" required />
+          </label>
+          <label class="photo-picker">
+            Photo de profil <span>facultative · 5 Mo maximum</span>
+            <input id="signupPhoto" type="file" accept="image/jpeg,image/png,image/webp" />
+          </label>
+          <p class="privacy-note">Cette photo sera visible publiquement dans le classement.</p>
+          <button class="primary-button" type="submit">Créer mon compte</button>
+        </form>
+
+        <form id="loginForm" class="account-form" hidden>
+          <label>
+            Adresse e-mail
+            <input id="loginEmail" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            Mot de passe
+            <input id="loginPassword" type="password" autocomplete="current-password" required />
+          </label>
+          <button class="primary-button" type="submit">Se connecter</button>
+        </form>
+      </div>
+
+      <div id="memberAccount" class="member-account" hidden>
+        <div class="profile-summary">
+          <span id="profileAvatar" class="profile-avatar">FR</span>
+          <div><strong id="profilePseudo"></strong><span id="profileEmail"></span></div>
+        </div>
+        <label class="photo-picker">
+          Modifier ma photo
+          <input id="profilePhoto" type="file" accept="image/jpeg,image/png,image/webp" />
+        </label>
+        <button id="savePhoto" class="primary-button" type="button">Enregistrer la photo</button>
+        <button id="logoutButton" class="secondary-button" type="button">Se déconnecter</button>
+      </div>
+      <p id="accountMessage" class="account-message" role="status"></p>
+    </dialog>
+
+    <script src="./config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./backend.js" defer></script>
     <script src="./app.js" defer></script>
+    <script src="./account.js" defer></script>
   </body>
 </html>
