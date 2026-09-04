@@ -120,11 +120,11 @@ main { padding: 76px clamp(20px, 5vw, 72px) 96px; }
 }
 .table-head { min-height: 46px; padding: 0 24px; color: var(--muted); border-bottom: 1px solid var(--line); font-size: 10px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
 .ranking-list { margin: 0; padding: 0; list-style: none; }
-.ranking-row { height: 104px; min-height: 104px; padding: 0 24px; border-bottom: 1px solid var(--line); }
+.ranking-row { min-height: 96px; padding: 0 24px; border-bottom: 1px solid var(--line); }
 .ranking-row:last-child { border-bottom: 0; }
 .rank { font-size: 26px; font-weight: 950; font-variant-numeric: tabular-nums; }
-.rider { height: 100%; display: flex; align-items: center; gap: 14px; min-width: 0; }
-.avatar { width: 139px; height: 100%; flex: 0 0 139px; display: grid; place-items: center; overflow: hidden; border: 2px solid rgba(7,26,32,.18); border-radius: 0; color: var(--ink); background: var(--blue); font-size: 16px; font-weight: 950; }
+.rider { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.avatar { width: 104px; height: 78px; flex: 0 0 104px; display: grid; place-items: center; overflow: hidden; border: 2px solid rgba(7,26,32,.18); border-radius: 10px; color: var(--ink); background: var(--blue); font-size: 15px; font-weight: 950; }
 .avatar img { width: 100%; height: 100%; display: block; border-radius: inherit; object-fit: cover; object-position: center; }
 .ranking-row:nth-child(2n) .avatar { background: var(--acid); }
 .rider-name { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 17px; font-weight: 850; white-space: nowrap; }
@@ -191,10 +191,11 @@ footer { padding: 26px clamp(20px, 5vw, 72px); display: flex; justify-content: s
   .toolbar { align-items: stretch; flex-direction: column; }
   .search input { width: 100%; }
   .table-head { display: none; }
-  .ranking-row { height: 96px; min-height: 96px; padding: 0 12px; grid-template-columns: 32px minmax(0, 1fr) auto; }
+  .ranking-row { min-height: 88px; padding: 0 12px; grid-template-columns: 32px minmax(0, 1fr) auto; }
   .ranking-row .runs { display: none; }
   .rank { font-size: 20px; }
-  .avatar { width: 128px; height: 100%; flex-basis: 128px; border-radius: 0; }
+  .rider { gap: 10px; }
+  .avatar { width: 84px; height: 64px; flex-basis: 84px; border-radius: 9px; }
   .best-time { font-size: 25px; }
   .run-section { margin-top: 76px; grid-template-columns: 1fr; gap: 28px; }
   .run-form { grid-template-columns: 1fr; }
