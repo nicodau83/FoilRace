@@ -20,6 +20,7 @@
   const adminRuns = document.querySelector("#adminRuns");
   const adminRiders = document.querySelector("#adminRiders");
   const adminMessage = document.querySelector("#adminMessage");
+  const adminBadge = document.querySelector("#adminBadge");
   const appUrl = "https://nicodau83.github.io/FoilRace/";
   let recoveryMode = false;
 
@@ -44,7 +45,9 @@
   }
 
   async function loadAdminPanel(user) {
-    if (!adminPanel || !backend?.isAdmin(user)) {
+    const admin = Boolean(adminPanel && backend?.isAdmin(user));
+    if (adminBadge) adminBadge.hidden = !admin;
+    if (!admin) {
       if (adminPanel) adminPanel.hidden = true;
       return;
     }
