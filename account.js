@@ -60,6 +60,80 @@
         row.className = "admin-row";
         const description = document.createElement("span");
         description.textContent = `${run.pseudo} · ${formatTime(run.elapsed_centiseconds)} · ${run.season}`;
+        const actions = document.createElement("div");
+        actions.className = "admin-actions";
+
+        const edit = document.createElement("button");
+        edit.type = "button";
+        edit.className = "secondary-button admin-action-button";
+        edit.textContent = "Modifier";
+        edit.addEventListener("click", () => {
+          const editor = document.createElement("form");
+          editor.className = "admin-edit-form";
+
+          const secondsInput = document.createElement("input");
+          secondsInput.type = "number";
+          secondsInput.min = "0";
+          secondsInput.step = "1";
+          secondsInput.required = true;
+          secondsInput.value = String(Math.floor(run.elapsed_centiseconds / 100));
+          secondsInput.className = "admin-time-input";
+          secondsInput.setAttribute("aria-label", "Secondes");
+
+          const separator = document.createElement("span");
+          separator.textContent = ",";
+
+          const hundredthsInput = document.createElement("input");
+          hundredthsInput.type = "number";
+          hundredthsInput.min = "0";
+          hundredthsInput.max = "99";
+          hundredthsInput.step = "1";
+          hundredthsInput.required = true;
+          hundredthsInput.value = String(run.elapsed_centiseconds % 100).padStart(2, "0");
+          hundredthsInput.className = "admin-time-input";
+          hundredthsInput.setAttribute("aria-label", "Centièmes");
+
+          const unit = document.createElement("span");
+          unit.textContent = "s";
+
+          const save = document.createElement("button");
+          save.type = "submit";
+          save.className = "primary-button admin-action-button";
+          save.textContent = "Enregistrer";
+
+          const cancel = document.createElement("button");
+          cancel.type = "button";
+          cancel.className = "text-button";
+          cancel.textContent = "Annuler";
+          cancel.addEventListener("click", () => actions.replaceChildren(edit, remove));
+
+          editor.append(secondsInput, separator, hundredthsInput, unit, save, cancel);
+          actions.replaceChildren(editor);
+          secondsInput.focus();
+
+          editor.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const seconds = Number(secondsInput.value);
+            const hundredths = Number(hundredthsInput.value);
+            const elapsedCentiseconds = seconds * 100 + hundredths;
+            if (!Number.isInteger(seconds) || seconds < 0 || !Number.isInteger(hundredths) || hundredths < 0 || hundredths > 99 || elapsedCentiseconds <= 0) {
+              adminMessage.textContent = "Saisis un temps valide : secondes et centièmes entre 00 et 99.";
+              return;
+            }
+            save.disabled = true;
+            adminMessage.textContent = "Modification du chrono…";
+            try {
+              await backend.updateRun(run.id, elapsedCentiseconds);
+              await loadAdminPanel(user);
+              adminMessage.textContent = "Chrono modifié.";
+              window.dispatchEvent(new Event("foilrace-profile-updated"));
+            } catch (error) {
+              save.disabled = false;
+              adminMessage.textContent = error.message || "Modification impossible.";
+            }
+          });
+        });
+
         const remove = document.createElement("button");
         remove.type = "button";
         remove.className = "danger-button";
@@ -75,7 +149,9 @@
             adminMessage.textContent = error.message || "Suppression impossible.";
           }
         });
-        row.append(description, remove);
+
+        actions.append(edit, remove);
+        row.append(description, actions);
         return row;
       }));
 
