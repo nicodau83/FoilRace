@@ -134,11 +134,17 @@
           </label>
           <label>
             Mot de passe
-            <input id="signupPassword" type="password" minlength="8" autocomplete="new-password" required />
+            <span class="password-control">
+              <input id="signupPassword" type="password" minlength="8" autocomplete="new-password" required />
+              <button class="password-toggle" type="button" data-password-target="signupPassword" aria-controls="signupPassword" aria-pressed="false">Afficher</button>
+            </span>
           </label>
           <label>
             Confirmer le mot de passe
-            <input id="signupPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required />
+            <span class="password-control">
+              <input id="signupPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required />
+              <button class="password-toggle" type="button" data-password-target="signupPasswordConfirm" aria-controls="signupPasswordConfirm" aria-pressed="false">Afficher</button>
+            </span>
           </label>
           <button class="primary-button" type="submit">Créer mon compte</button>
         </form>
@@ -150,7 +156,10 @@
           </label>
           <label>
             Mot de passe
-            <input id="loginPassword" type="password" autocomplete="current-password" required />
+            <span class="password-control">
+              <input id="loginPassword" type="password" autocomplete="current-password" required />
+              <button class="password-toggle" type="button" data-password-target="loginPassword" aria-controls="loginPassword" aria-pressed="false">Afficher</button>
+            </span>
           </label>
           <button class="primary-button" type="submit">Se connecter</button>
           <div class="account-links">
@@ -172,11 +181,17 @@
           <p class="auth-help">Choisis ton nouveau mot de passe.</p>
           <label>
             Nouveau mot de passe
-            <input id="newPassword" type="password" minlength="8" autocomplete="new-password" required />
+            <span class="password-control">
+              <input id="newPassword" type="password" minlength="8" autocomplete="new-password" required />
+              <button class="password-toggle" type="button" data-password-target="newPassword" aria-controls="newPassword" aria-pressed="false">Afficher</button>
+            </span>
           </label>
           <label>
             Confirmer le nouveau mot de passe
-            <input id="newPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required />
+            <span class="password-control">
+              <input id="newPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required />
+              <button class="password-toggle" type="button" data-password-target="newPasswordConfirm" aria-controls="newPasswordConfirm" aria-pressed="false">Afficher</button>
+            </span>
           </label>
           <button class="primary-button" type="submit">Enregistrer le nouveau mot de passe</button>
         </form>
