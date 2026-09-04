@@ -115,6 +115,22 @@
     return { profiles, runs, adminUserId: userData.user.id };
   }
 
+  async function updateRun(runId, elapsedCentiseconds) {
+    if (!Number.isInteger(elapsedCentiseconds) || elapsedCentiseconds <= 0) {
+      throw new Error("Le chrono doit être supérieur à zéro.");
+    }
+    const { data: userData, error: userError } = await client.auth.getUser();
+    if (userError || !isAdmin(userData.user)) throw new Error("Accès administrateur refusé.");
+    const { data, error } = await client
+      .from("runs")
+      .update({ elapsed_centiseconds: elapsedCentiseconds })
+      .eq("id", runId)
+      .select("id,elapsed_centiseconds")
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
   async function deleteRun(runId) {
     const { error } = await client.from("runs").delete().eq("id", runId);
     if (error) throw error;
@@ -139,6 +155,7 @@
     uploadAvatar,
     isAdmin,
     getAdminData,
+    updateRun,
     deleteRun,
     deleteRider
   };
