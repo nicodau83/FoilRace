@@ -70,7 +70,12 @@
       throw new Error("Choisis une image JPG, PNG ou WebP de moins de 5 Mo.");
     }
     const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    const path = `${userId}/profile.${extension}`;
+    const { data: existingProfile } = await client
+      .from("profiles")
+      .select("avatar_path")
+      .eq("id", userId)
+      .single();
+    const path = `${userId}/profile-${Date.now()}.${extension}`;
     const { error: uploadError } = await client.storage
       .from("avatars")
       .upload(path, file, { upsert: true, contentType: file.type, cacheControl: "3600" });
@@ -80,6 +85,9 @@
       .update({ avatar_path: path, updated_at: new Date().toISOString() })
       .eq("id", userId);
     if (profileError) throw profileError;
+    if (existingProfile?.avatar_path && existingProfile.avatar_path !== path) {
+      await client.storage.from("avatars").remove([existingProfile.avatar_path]);
+    }
     return publicAvatarUrl(path);
   }
 
