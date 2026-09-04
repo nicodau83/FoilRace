@@ -458,3 +458,39 @@ footer { padding: 26px clamp(20px, 5vw, 72px); display: flex; justify-content: s
     justify-content: flex-start;
   }
 }
+
+
+/* Afficher ou masquer les mots de passe */
+.password-control {
+  position: relative;
+  display: block;
+}
+.account-form .password-control input {
+  padding-right: 96px;
+}
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  min-width: 82px;
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--white);
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+}
+.password-toggle:hover,
+.password-toggle:focus-visible {
+  color: #b52b16;
+  outline: 2px solid var(--orange);
+  outline-offset: -2px;
+}
+@media (max-width: 720px) {
+  .password-toggle {
+    min-height: 42px;
+  }
+}
