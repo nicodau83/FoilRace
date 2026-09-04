@@ -25,6 +25,13 @@ const runIdentity = document.querySelector("#runIdentity");
 const runRider = document.querySelector("#runRider");
 const formMessage = document.querySelector("#formMessage");
 const installButton = document.querySelector("#installButton");
+const installDialog = document.querySelector("#installDialog");
+const closeInstall = document.querySelector("#closeInstall");
+const iosInstallSteps = document.querySelector("#iosInstallSteps");
+const genericInstallSteps = document.querySelector("#genericInstallSteps");
+const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
+const isMobileDevice = /Android|iPad|iPhone|iPod/.test(navigator.userAgent) || window.matchMedia("(max-width: 720px)").matches;
+const isStandalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 
 function readRuns() {
   if (sharedRanking) return sharedRanking;
@@ -215,12 +222,24 @@ window.addEventListener("beforeinstallprompt", (event) => {
 });
 
 installButton.addEventListener("click", async () => {
-  if (!deferredInstallPrompt) return;
-  deferredInstallPrompt.prompt();
-  await deferredInstallPrompt.userChoice;
-  deferredInstallPrompt = null;
-  installButton.hidden = true;
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installButton.hidden = true;
+    return;
+  }
+  iosInstallSteps.hidden = !isIos;
+  genericInstallSteps.hidden = isIos;
+  installDialog.showModal();
 });
+
+closeInstall.addEventListener("click", () => installDialog.close());
+installDialog.addEventListener("click", (event) => {
+  if (event.target === installDialog) installDialog.close();
+});
+
+if (isMobileDevice && !isStandalone) installButton.hidden = false;
 
 window.addEventListener("appinstalled", () => { installButton.hidden = true; });
 
