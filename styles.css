@@ -472,6 +472,7 @@ footer { padding: 26px clamp(20px, 5vw, 72px); display: flex; justify-content: s
   position: absolute;
   top: 50%;
   right: 5px;
+  transform: translateY(-50%);
   min-width: 82px;
   min-height: 38px;
   padding: 7px 10px;
