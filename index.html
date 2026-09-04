@@ -140,13 +140,7 @@
             Confirmer le mot de passe
             <input id="signupPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required />
           </label>
-          <label class="photo-picker">
-            Photo de profil <span>facultative · 5 Mo maximum</span>
-            <input id="signupPhoto" type="file" accept="image/jpeg,image/png,image/webp" />
-          </label>
-          <p class="privacy-note">Cette photo sera visible publiquement dans le classement.</p>
           <button class="primary-button" type="submit">Créer mon compte</button>
-          <p class="auth-switch">Tu as déjà un compte ? <button id="switchToLogin" class="text-button" type="button">Se connecter</button></p>
         </form>
 
         <form id="loginForm" class="account-form" hidden>
@@ -161,9 +155,7 @@
           <button class="primary-button" type="submit">Se connecter</button>
           <div class="account-links">
             <button id="forgotPasswordButton" class="text-button" type="button">Mot de passe oublié ?</button>
-            <button id="resendConfirmationButton" class="text-button" type="button">Renvoyer l’e-mail de confirmation</button>
           </div>
-          <p class="auth-switch">Pas encore de compte ? <button id="switchToSignup" class="text-button" type="button">Créer un compte</button></p>
         </form>
 
         <form id="recoveryForm" class="account-form" hidden>
