@@ -67,6 +67,17 @@ create policy "Admin lit tous les chronos"
   to authenticated
   using ((select auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
+drop policy if exists "Admin modifie les chronos" on public.runs;
+create policy "Admin modifie les chronos"
+  on public.runs for update
+  to authenticated
+  using ((select auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  with check (
+    (select auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+    and elapsed_centiseconds > 0
+    and season between 2026 and 2100
+  );
+
 drop policy if exists "Admin supprime les chronos" on public.runs;
 create policy "Admin supprime les chronos"
   on public.runs for delete
@@ -85,6 +96,7 @@ create policy "Admin supprime les riders"
 grant insert (rider_id, elapsed_centiseconds, source, validated, season) on public.runs to authenticated;
 grant usage, select on sequence public.runs_id_seq to authenticated;
 grant delete on public.runs, public.profiles to authenticated;
+grant update (elapsed_centiseconds) on public.runs to authenticated;
 grant update (avatar_path, updated_at) on public.profiles to authenticated;
 
 create or replace function public.handle_new_user()
