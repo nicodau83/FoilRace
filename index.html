@@ -187,8 +187,10 @@
           <span id="profileAvatar" class="profile-avatar">FR</span>
           <div><strong id="profilePseudo"></strong><span id="profileEmail"></span></div>
         </div>
+        <div id="adminBadge" class="admin-badge" hidden>ADMINISTRATEUR</div>
         <label class="photo-picker">
-          Modifier ma photo
+          Photo du classement
+          <span>Elle remplacera tes initiales dans le classement · JPG, PNG ou WebP · 5 Mo maximum</span>
           <input id="profilePhoto" type="file" accept="image/jpeg,image/png,image/webp" />
         </label>
         <button id="savePhoto" class="secondary-button" type="button">Mettre à jour ma photo</button>
@@ -214,6 +216,28 @@
           <p id="adminMessage" class="account-message" role="status"></p>
         </section>
       </div>
+    </dialog>
+
+    <dialog id="installDialog" class="install-dialog" aria-labelledby="installTitle">
+      <div class="dialog-header">
+        <div>
+          <p class="section-number">APPLICATION MOBILE</p>
+          <h2 id="installTitle">Installer FOILRACE</h2>
+        </div>
+        <button id="closeInstall" class="close-button" type="button" aria-label="Fermer">×</button>
+      </div>
+      <ol id="iosInstallSteps" class="install-steps" hidden>
+        <li>Ouvre FOILRACE dans <strong>Safari</strong>.</li>
+        <li>Touche le bouton <strong>Partager</strong>.</li>
+        <li>Choisis <strong>Sur l’écran d’accueil</strong>.</li>
+        <li>Active <strong>Ouvrir comme app</strong>, puis touche <strong>Ajouter</strong>.</li>
+      </ol>
+      <ol id="genericInstallSteps" class="install-steps" hidden>
+        <li>Ouvre le menu de ton navigateur.</li>
+        <li>Choisis <strong>Installer l’application</strong> ou <strong>Ajouter à l’écran d’accueil</strong>.</li>
+        <li>Confirme l’installation.</li>
+      </ol>
+      <p class="install-note">L’icône FOILRACE apparaîtra ensuite directement sur ton téléphone.</p>
     </dialog>
 
     <script src="./config.js"></script>
