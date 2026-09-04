@@ -224,8 +224,6 @@
   accountButton.addEventListener("click", () => openAccount("login"));
   closeButton.addEventListener("click", () => dialog.close());
   dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
-  document.querySelector("#switchToSignup").addEventListener("click", () => selectTab("signup"));
-  document.querySelector("#switchToLogin").addEventListener("click", () => selectTab("login"));
   document.querySelector("#forgotPasswordButton").addEventListener("click", showRecoveryRequest);
   document.querySelector("#backToLoginButton").addEventListener("click", () => selectTab("login"));
   document.querySelector("#signupSuccessLogin").addEventListener("click", () => {
@@ -240,7 +238,6 @@
     const email = document.querySelector("#signupEmail").value.trim();
     const password = document.querySelector("#signupPassword").value;
     const passwordConfirm = document.querySelector("#signupPasswordConfirm").value;
-    const photo = document.querySelector("#signupPhoto").files[0];
     if (password !== passwordConfirm) {
       showMessage("Les deux mots de passe ne correspondent pas.", true);
       return;
@@ -256,7 +253,6 @@
         }
       });
       if (error) throw error;
-      if (data.session && photo) await backend.uploadAvatar(data.user.id, photo);
       signupForm.reset();
       if (!data.session) {
         showSignupSuccess(email);
@@ -292,25 +288,6 @@
         true
       );
     }
-  });
-
-  document.querySelector("#resendConfirmationButton").addEventListener("click", async () => {
-    const email = document.querySelector("#loginEmail").value.trim();
-    if (!email) {
-      showMessage("Saisis d’abord ton adresse e-mail.", true);
-      return;
-    }
-    showMessage("Envoi de l’e-mail de confirmation…");
-    const { error } = await backend.client.auth.resend({
-      type: "signup",
-      email,
-      options: { emailRedirectTo: appUrl }
-    });
-    if (error) {
-      showMessage(error.message || "Impossible d’envoyer l’e-mail.", true);
-      return;
-    }
-    showMessage("Si ce compte n’était pas encore confirmé, un e-mail a été envoyé. S’il est déjà activé, connecte-toi directement ou utilise « Mot de passe oublié ».");
   });
 
   recoveryForm.addEventListener("submit", async (event) => {
