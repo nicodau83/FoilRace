@@ -23,6 +23,26 @@
   const adminBadge = document.querySelector("#adminBadge");
   const appUrl = "https://nicodau83.github.io/FoilRace/";
   let recoveryMode = false;
+  const passwordToggles = [...document.querySelectorAll(".password-toggle")];
+
+  function setPasswordVisibility(button, visible) {
+    const input = document.getElementById(button.dataset.passwordTarget);
+    if (!input) return;
+    input.type = visible ? "text" : "password";
+    button.textContent = visible ? "Masquer" : "Afficher";
+    button.setAttribute("aria-pressed", String(visible));
+    button.setAttribute("aria-label", `${visible ? "Masquer" : "Afficher"} le mot de passe`);
+  }
+
+  function maskPasswords() {
+    passwordToggles.forEach((button) => setPasswordVisibility(button, false));
+  }
+
+  passwordToggles.forEach((button) => {
+    button.addEventListener("click", () => {
+      setPasswordVisibility(button, button.getAttribute("aria-pressed") !== "true");
+    });
+  });
 
   function showMessage(text, error = false) {
     message.textContent = text;
@@ -303,6 +323,7 @@
   accountButton.addEventListener("click", () => openAccount("login"));
   closeButton.addEventListener("click", () => dialog.close());
   dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener("close", maskPasswords);
   document.querySelector("#forgotPasswordButton").addEventListener("click", showRecoveryRequest);
   document.querySelector("#backToLoginButton").addEventListener("click", () => selectTab("login"));
   document.querySelector("#signupSuccessLogin").addEventListener("click", () => {
