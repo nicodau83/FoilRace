@@ -1,4 +1,4 @@
-const CACHE_NAME = "foilrace-v10";
+const CACHE_NAME = "foilrace-v11";
 const APP_SHELL = ["./", "./index.html", "./styles.css", "./config.js", "./backend.js", "./app.js", "./account.js", "./manifest.webmanifest", "./assets/icon.svg"];
 
 self.addEventListener("install", (event) => {
