@@ -416,3 +416,45 @@ footer { padding: 26px clamp(20px, 5vw, 72px); display: flex; justify-content: s
   .install-button { display: inline-block; }
   .install-dialog { width: calc(100% - 24px); max-height: calc(100dvh - 24px); padding: 24px 20px; }
 }
+
+
+/* Correction d'un chrono par l'administrateur */
+.admin-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.admin-action-button {
+  width: auto;
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 11px;
+}
+.admin-edit-form {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.admin-time-input {
+  width: 74px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 720px) {
+  .admin-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .admin-actions,
+  .admin-edit-form {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
